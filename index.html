@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midterm Reviewer Interactive Quiz (1-35)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 py-4 px-6 shadow-md">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-indigo-400">Midterm Reviewer Quiz (1-35)</h1>
+            <div id="progress-indicator" class="text-sm font-medium text-slate-400">Question 1 of 35</div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-3xl w-full mx-auto p-4 sm:p-6 my-auto">
+        
+        <!-- Quiz Card -->
+        <div id="quiz-card" class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl p-6 sm:p-8 transition-all">
+            <div id="question-container">
+                <!-- Question Number & Text -->
+                <div class="mb-6">
+                    <span id="question-badge" class="inline-block px-3 py-1 bg-indigo-500/10 text-indigo-400 text-xs font-semibold rounded-full mb-2">Question 1</span>
+                    <h2 id="question-text" class="text-lg sm:text-xl font-semibold text-slate-100 leading-relaxed">Loading question...</h2>
+                </div>
+
+                <!-- Options List -->
+                <div id="options-container" class="space-y-3 mb-6">
+                    <!-- Options injected via JS -->
+                </div>
+
+                <!-- Explanation / Feedback Box -->
+                <div id="feedback-box" class="hidden mb-6 p-4 rounded-xl border text-sm"></div>
+
+                <!-- Next Button -->
+                <div class="flex justify-end">
+                    <button id="next-btn" onclick="handleNext()" class="hidden px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition shadow-lg shadow-indigo-600/20">
+                        Next Question
+                    </button>
+                </div>
+            </div>
+
+            <!-- Score Screen (Hidden initially) -->
+            <div id="score-screen" class="hidden text-center py-8">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-indigo-500/10 text-indigo-400 rounded-full text-3xl font-bold mb-4 border border-indigo-500/20">
+                    <span id="score-percentage">0%</span>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-100 mb-2">Quiz Completed!</h2>
+                <p id="score-summary" class="text-slate-400 mb-8">You scored X out of 35 correctly.</p>
+                <button onclick="restartQuiz()" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition shadow-lg shadow-indigo-600/20">
+                    Retake Quiz
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800">
+        Interactive Midterm Reviewer &bull; Built strictly from your PDF guidelines
+    </footer>
+
+    <script>
+        const questions = [
+            {
+                q: "What is the next number in the sequence 56, 63, 72, 83?",
+                ans: "96",
+                distractors: ["94", "95", "98"]
+            },
+            {
+                q: "What is the next number in the sequence 79, 69, 60, 52, 45, 39?",
+                ans: "34",
+                distractors: ["32", "35", "33"]
+            },
+            {
+                q: "Which of these well-known scientists used inductive reasoning to discover that the time required for a pendulum to complete one swing depends on the length of the pendulum?",
+                ans: "Galileo Galilei",
+                distractors: ["Isaac Newton", "Albert Einstein", "Blaise Pascal"]
+            },
+            {
+                q: "Which is the second step in Polya's Problem Solving Strategy?",
+                ans: "Devise a Plan",
+                distractors: ["Understand the problem", "Carry out the plan", "Review the solution"]
+            },
+            {
+                q: "Which of these represents the conclusion formed in an inductive type of reasoning?",
+                ans: "Conjecture",
+                distractors: ["Theorem", "Axiom", "Hypothesis"]
+            },
+            {
+                q: "What is the first step in Polya's Problem Solving Strategy?",
+                ans: "Understand the problem.",
+                distractors: ["Devise a plan", "Carry out the plan", "Review the solution"]
+            },
+            {
+                q: "What do you call the conclusion formed based on the examination of specific examples?",
+                ans: "Conjecture",
+                distractors: ["Deduction", "Premise", "Counterexample"]
+            },
+            {
+                q: "What is the next number in the sequence 99, 86, 73, 60?",
+                ans: "47",
+                distractors: ["45", "49", "46"]
+            },
+            {
+                q: "Which is the third step in Polya's Problem Solving Strategy?",
+                ans: "Carry out the plan.",
+                distractors: ["Understand the problem", "Devise a plan", "Look back"]
+            },
+            {
+                q: "What do you call the process of reaching a general conclusion by examining specific examples?",
+                ans: "Inductive reasoning",
+                distractors: ["Deductive reasoning", "Estimation", "Optimization"]
+            },
+            {
+                q: "What is the next number in the sequence 10, 12, 17, 19, 24?",
+                ans: "26",
+                distractors: ["25", "28", "29"]
+            },
+            {
+                q: "What is the difference in the sequence 12, 66, 120, 174?",
+                ans: "54",
+                distractors: ["48", "56", "60"]
+            },
+            {
+                q: "What do you call an ordered list of numbers such as 1, 5, 12, 22, 35, ...?",
+                ans: "Sequence",
+                distractors: ["Series", "Set", "Progression"]
+            },
+            {
+                q: "Which of the following represents the first term of a sequence?",
+                ans: "a₁",
+                distractors: ["n", "aₙ", "S₁"]
+            },
+            {
+                q: "Which of the following enables you to find any term of a sequence without having to go up from one term to the next?",
+                ans: "Nth-term formula for a sequence",
+                distractors: ["Recursive formula", "Arithmetic difference", "Summation formula"]
+            },
+            {
+                q: "What is the next number in the sequence 3/4, 4/7, 5/10, 6/13, 7/16?",
+                ans: "8/19",
+                distractors: ["8/18", "9/19", "7/19"]
+            },
+            {
+                q: "Which formula would apply to the sequence 5, 7, 9, 11, 13, ...?",
+                ans: "2n+3",
+                distractors: ["3n+2", "2n+1", "n+4"]
+            },
+            {
+                q: "Which step in Polya's Problem Solving Strategy answers the question 'What is the goal?'",
+                ans: "Understand the problem",
+                distractors: ["Devise a plan", "Carry out the plan", "Review the solution"]
+            },
+            {
+                q: "What is the next number in the sequence 2/4, 4/7, 6/10, 8/13, 10/16?",
+                ans: "12/19",
+                distractors: ["12/18", "10/19", "14/19"]
+            },
+            {
+                q: "What is the 23rd term in the sequence 2, 4, 6, 8, 10, 12?",
+                ans: "46",
+                distractors: ["44", "48", "42"]
+            },
+            {
+                q: "What is the next number in the sequence 7, 4, 1, -2, -5, -8?",
+                ans: "-11",
+                distractors: ["-10", "-9", "-12"]
+            },
+            {
+                q: "Which step in Polya's Problem Solving Strategy requires you to work carefully?",
+                ans: "Carry out the Plan",
+                distractors: ["Understand the problem", "Devise a plan", "Review the solution"]
+            },
+            {
+                q: "From the given data, if the pendulum has a length of 49 units, what will be its period? (Length: 1, 4, 9, 16, 25, 36, ... | Period: 1, 2, 3, 4, 5, 6, ...)",
+                ans: "7 heartbeats",
+                distractors: ["8 heartbeats", "6 heartbeats", "49 heartbeats"]
+            },
+            {
+                q: "Which step in Polya's Problem Solving Strategy answers the question 'Is there an extraneous information that is not needed to solve the problem?'",
+                ans: "Understand the problem",
+                distractors: ["Devise a plan", "Carry out the plan", "Review the solution"]
+            },
+            {
+                q: "What is the 25th term in the sequence 1, 4, 7, 10, 13, 16?",
+                ans: "73",
+                distractors: ["70", "76", "72"]
+            },
+            {
+                q: "What is the 16th term in the sequence 7, 11, 15, 19, 23, 27?",
+                ans: "67",
+                distractors: ["63", "71", "64"]
+            },
+            {
+                q: "Which step in Polya's Problem Solving Strategy interprets the solution in the context of the problem?",
+                ans: "Review the solution.",
+                distractors: ["Understand the problem", "Devise a plan", "Carry out the plan"]
+            },
+            {
+                q: "Which of the following is an example of inductive reasoning?",
+                ans: "The chair in the living room is red. The chair in the dining room is red. The chair in the bedroom is red. Therefore, all chairs in the house are red.",
+                distractors: ["All mammals have hearts. A dog is a mammal. Therefore, a dog has a heart.", "All triangles have 180 degrees. This is a triangle, so it has 180 degrees.", "If it rains, the ground is wet. The ground is wet, so it rained."]
+            },
+            {
+                q: "Which step in Polya's Problem Solving Strategy keeps an accurate and neat record of all your attempts?",
+                ans: "Carry out the plan.",
+                distractors: ["Understand the problem", "Devise a plan", "Review the solution"]
+            },
+            {
+                q: "Which of the following is an example of deductive reasoning?",
+                ans: "All Filipinos eat rice. Ronnie is a Filipino. Therefore, Ronnie eats rice.",
+                distractors: ["Every quiz I took was easy. Therefore, all quizzes are easy.", "The sun rose yesterday and today, so it will rise tomorrow.", "The first three cats I saw were black, so all cats are black."]
+            },
+            {
+                q: "What is the nth term in the sequence 4, 14, 24, 34, 44, 54?",
+                ans: "10n-6",
+                distractors: ["10n+4", "6n+10", "4n+10"]
+            },
+            {
+                q: "What is the nth term in the sequence 25, 21, 17, 13, 9, 5?",
+                ans: "29-4n",
+                distractors: ["25-4n", "4n+25", "21-4n"]
+            },
+            {
+                q: "Which expression represents the sum of the first 100 natural numbers?",
+                ans: "All of these",
+                distractors: ["n(n+1)/2", "50(101)", "5050"]
+            },
+            {
+                q: "From the given data, what is the length of the pendulum if its period is 9 heartbeats? (Length: 1, 4, 9, 16, 25, 36, ... | Period: 1, 2, 3, 4, 5, 6, ...)",
+                ans: "81 units",
+                distractors: ["64 units", "49 units", "100 units"]
+            },
+            {
+                q: "Which sequence could be represented by the formula 11n-8, where n is the nth term?",
+                ans: "3, 14, 25, 36, 47, ...",
+                distractors: ["11, 22, 33, 44, ...", "8, 19, 30, 41, ...", "3, 8, 13, 18, ..."]
+            }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let answered = false;
+        let currentOptions = [];
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function loadQuestion() {
+            answered = false;
+            const qObj = questions[currentIndex];
+            
+            document.getElementById('progress-indicator').innerText = `Question ${currentIndex + 1} of ${questions.length}`;
+            document.getElementById('question-badge').innerText = `Question ${currentIndex + 1}`;
+            document.getElementById('question-text').innerText = qObj.q;
+            
+            const feedbackBox = document.getElementById('feedback-box');
+            feedbackBox.classList.add('hidden');
+            
+            document.getElementById('next-btn').classList.add('hidden');
+
+            currentOptions = shuffle([qObj.ans, ...qObj.distractors]);
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            currentOptions.forEach((option, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl border border-slate-700 bg-slate-700/50 hover:bg-slate-700 hover:border-indigo-500/50 transition font-medium text-slate-200 text-sm sm:text-base flex items-center justify-between group";
+                btn.innerHTML = `<span>${option}</span><span class="w-6 h-6 rounded-full border border-slate-600 flex items-center justify-center text-xs group-hover:border-indigo-400 group-hover:text-indigo-400">${String.fromCharCode(65 + idx)}</span>`;
+                btn.onclick = () => selectOption(option, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedOption, selectedBtn) {
+            if (answered) return;
+            answered = true;
+
+            const qObj = questions[currentIndex];
+            const feedbackBox = document.getElementById('feedback-box');
+            const optionButtons = document.getElementById('options-container').children;
+
+            for (let btn of optionButtons) {
+                btn.disabled = true;
+                const text = btn.querySelector('span').innerText;
+                if (text === qObj.ans) {
+                    btn.classList.remove('border-slate-700', 'bg-slate-700/50');
+                    btn.classList.add('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-300');
+                }
+            }
+
+            if (selectedOption === qObj.ans) {
+                score++;
+                selectedBtn.classList.remove('border-slate-700', 'bg-slate-700/50');
+                selectedBtn.classList.add('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-300');
+                feedbackBox.className = "mb-6 p-4 rounded-xl border text-sm bg-emerald-500/10 border-emerald-500/30 text-emerald-300";
+                feedbackBox.innerHTML = "<strong>Correct!</strong> Great job mastering this concept.";
+            } else {
+                selectedBtn.classList.remove('border-slate-700', 'bg-slate-700/50');
+                selectedBtn.classList.add('border-rose-500', 'bg-rose-500/10', 'text-rose-300');
+                feedbackBox.className = "mb-6 p-4 rounded-xl border text-sm bg-rose-500/10 border-rose-500/30 text-rose-300";
+                feedbackBox.innerHTML = `<strong>Incorrect.</strong> The correct answer is <strong>${qObj.ans}</strong>.`;
+            }
+
+            feedbackBox.classList.remove('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function handleNext() {
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showScore();
+            }
+        }
+
+        function showScore() {
+            document.getElementById('question-container').classList.add('hidden');
+            document.getElementById('score-screen').classList.remove('hidden');
+            document.getElementById('progress-indicator').innerText = "Quiz Completed";
+            
+            const percentage = Math.round((score / questions.length) * 100);
+            document.getElementById('score-percentage').innerText = `${percentage}%`;
+            document.getElementById('score-summary').innerText = `You answered ${score} out of ${questions.length} questions correctly.`;
+        }
+
+        function restartQuiz() {
+            currentIndex = 0;
+            score = 0;
+            document.getElementById('score-screen').classList.add('hidden');
+            document.getElementById('question-container').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        // Initialize quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
